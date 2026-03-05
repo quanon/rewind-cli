@@ -12,9 +12,18 @@ enum Collection {
 #[derive(Parser)]
 #[command(name = "rewind", about = "Fetch yo-yo product info from YoYo Store Rewind")]
 struct Cli {
-    /// Collection to fetch
-    #[arg(value_enum)]
-    collection: Collection,
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(Debug, clap::Subcommand)]
+enum Command {
+    /// List products from a collection
+    List {
+        /// Collection to fetch
+        #[arg(value_enum)]
+        collection: Collection,
+    },
 }
 
 #[derive(Debug, Deserialize)]
@@ -56,7 +65,8 @@ fn collection_url(collection: &Collection) -> &str {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
-    let url = collection_url(&cli.collection);
+    let Command::List { collection } = cli.command;
+    let url = collection_url(&collection);
 
     let client = reqwest::blocking::Client::builder()
         .user_agent("Mozilla/5.0 (compatible; rewind-cli/0.1)")
