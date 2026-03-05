@@ -33,6 +33,7 @@ struct ShopifyResponse {
 
 #[derive(Debug, Deserialize)]
 struct ShopifyProduct {
+    id: u64,
     title: String,
     vendor: String,
     variants: Vec<Variant>,
@@ -47,6 +48,7 @@ struct Variant {
 
 #[derive(Debug, Serialize)]
 struct Product {
+    id: u64,
     vendor: String,
     title: String,
     price: u64,
@@ -84,6 +86,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .unwrap_or(0);
 
             Product {
+                id: p.id,
                 vendor: p.vendor,
                 title: p.title,
                 price,
